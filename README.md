@@ -145,8 +145,8 @@ This repo is oriented toward learning and local/demo use. For production you wou
 
 ## License
 
-MIT (or adjust to your preference.)
+MIT.
 
 ## Author
 
-[Your Name](https://github.com/<your-username>) — portfolio / DevOps learning project.
+[Your Name](https://github.com/Alireza-Hoseini-Sha) — portfolio / DevOps learning project.

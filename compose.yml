@@ -1,0 +1,57 @@
+networks:
+  wp-net:
+    name: wp-net
+    driver: bridge
+
+volumes:
+  vol-wp-db:
+    name: vol-wp-db
+  vol-wp-wp:
+    name: vol-wp-wp
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    volumes:
+      - vol-wp-db:/var/lib/mysql
+    env_file: .env
+    networks:
+      - wp-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  wordpress:
+    image: wordpress:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - vol-wp-wp:/var/www/html
+    env_file:
+      - .env
+    #ports:
+    #  - "80"
+    expose:
+      - "80"
+    networks:
+      - wp-net
+
+  nginx:
+    image: nginx:1.31.0
+    restart: unless-stopped
+    #depends_on:
+    #  wordpress:
+    #    condition: service_started
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certs:/etc/nginx/certs
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - wp-net
